@@ -1,0 +1,49 @@
+{
+  "name": "openjoi",
+  "version": "0.1.0",
+  "license": "ISC",
+  "description": "Converts OpenApi 3.0 specs (JSON) to Joi schemas",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watchAll",
+    "test:coverage": "jest --coverage",
+    "build": "rimraf dist/ && babel src --out-dir dist --ignore 'src/**/*.spec.js'",
+    "preversion": "npm test",
+    "version": "npm run build && git add .",
+    "postversion": "git push && git push --tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adamschnaare/openjoi.git"
+  },
+  "engines": {
+    "node": ">=8"
+  },
+  "keywords": [
+    "joi",
+    "openapi",
+    "swagger",
+    "json",
+    "schema",
+    "validation"
+  ],
+  "author": "Adam Schnaare <adam.schnaare@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/adamschnaare/openapi/issues"
+  },
+  "homepage": "https://github.com/adamschnaare/openapi#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.7.0",
+    "@babel/core": "^7.7.2",
+    "@babel/plugin-transform-spread": "^7.6.2",
+    "@babel/preset-env": "^7.6.3",
+    "jest": "^24.9.0",
+    "rimraf": "^3.0.0",
+    "util": "^0.12.1"
+  },
+  "dependencies": {
+    "@hapi/hoek": "^8.5.0",
+    "@hapi/joi": "^16.1.7"
+  }
+}

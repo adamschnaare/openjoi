@@ -1,0 +1,5 @@
+node_modules
+coverage
+mocks/**/proprietar*
+indexOld.js
+lib/resolver.js

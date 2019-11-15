@@ -1,0 +1,87 @@
+{
+  "components": {
+    "schemas": {
+      "string": {
+        "type": "string",
+        "description": "Sint deserunt reprehenderit ut occaecat ad."
+      },
+      "string_enum": {
+        "type": "string",
+        "enum": ["one", "two", "three"]
+      },
+      "number": {
+        "type": "number"
+      },
+      "integer": {
+        "type": "integer"
+      },
+      "boolean": {
+        "type": "boolean"
+      },
+      "object": {
+        "type": "object",
+        "required": ["two"],
+        "properties": {
+          "one": { "type": "string" },
+          "two": { "type": "string" }
+        }
+      },
+      "object_noType": {
+        "properties": {
+          "one": { "type": "string" },
+          "two": { "type": "string" }
+        }
+      },
+      "array": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "array_$ref": {
+        "type": "array",
+        "items": { "$ref": "#/components/schemas/number" }
+      },
+      "object_allOf": {
+        "type": "object",
+        "properties": {
+          "string": { "type": "string" },
+          "number": { "type": "number" },
+          "string_number": {
+            "allOf": [
+              { "$ref": "#/components/schemas/string" },
+              { "$ref": "#/components/schemas/number" }
+            ]
+          }
+        }
+      },
+      "object_oneOf": {
+        "type": "object",
+        "properties": {
+          "string": { "type": "string" },
+          "number": { "type": "number" },
+          "string_number": {
+            "oneOf": [
+              { "$ref": "#/components/schemas/string" },
+              { "$ref": "#/components/schemas/number" }
+            ]
+          }
+        }
+      },
+      "object_recursiveFail": {
+        "type": "object",
+        "properties": {
+          "object_recursiveFail": { "$ref": "#/components/schemas/object_recursiveFail" }
+        }
+      },
+      "object_recursiveFail_oneOf": {
+        "type": "object",
+        "properties": {
+          "string": { "type": "string" },
+          "number": { "type": "number" },
+          "string_number": {
+            "oneOf": [{ "$ref": "#/components/schemas/object_recursiveFail_oneOf" }]
+          }
+        }
+      }
+    }
+  }
+}

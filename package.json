@@ -32,7 +32,7 @@
   "bugs": {
     "url": "https://github.com/adamschnaare/openapi/issues"
   },
-  "homepage": "https://github.com/adamschnaare/openapi#readme",
+  "homepage": "https://github.com/adamschnaare/openjoi#readme",
   "devDependencies": {
     "@babel/cli": "^7.7.0",
     "@babel/core": "^7.7.2",

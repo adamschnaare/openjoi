@@ -26,7 +26,6 @@ class SchemaParser {
     this.joiSchemas = {};
 
     for (const id in schemas) {
-      // console.log('id', id)
       this.joiSchemas[id] = this.resolve({
         id,
         schema: schemas[id],
@@ -214,8 +213,6 @@ class SchemaParser {
     schema,
     history
   }) {
-    // console.log('array:id', id)
-    // console.log('array:history', history)
     const {
       items
     } = schema;

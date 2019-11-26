@@ -12,7 +12,7 @@ npm install openjoi
 // Import
 import path from 'path'
 import { readFileSync } from 'fs'
-import { convert } from './index'
+import { convert } from 'openjoi'
 import Joi from '@hapi/joi'
 
 // Get file (local file, or from remote, whatever)

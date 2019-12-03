@@ -29,17 +29,17 @@ export class SchemaParser {
 
     // allOf
     if (schema.allOf) {
-      return this.list({ id, schemas: schema.allOf, required, requireAll: true, history })
+      return this.list({ id, schemas: schema.allOf, required, history, mode: 'all' })
     }
 
     // anyOf
     if (schema.anyOf) {
-      return this.list({ id, schemas: schema.anyOf, required, history })
+      return this.list({ id, schemas: schema.anyOf, required, history, mode: 'any' })
     }
 
     // oneOf
     if (schema.oneOf) {
-      return this.list({ id, schemas: schema.oneOf, required, requireOne: true, history })
+      return this.list({ id, schemas: schema.oneOf, required, history, mode: 'one' })
     }
 
     // $ref
@@ -135,13 +135,12 @@ export class SchemaParser {
    * @param {bool} requireAll if all the schemas should be required
    * @param {bool} requireOne if at least one schema should be required
    */
-  list({ id, schemas, required, requireAll, requireOne, history }) {
-    const items = schemas.map(item =>
-      this.resolve({ id, schema: item, required: requireAll, history })
-    )
-    let joiSchema = Joi.array().items(...items)
+  list({ id, schemas, required, history, mode }) {
+    const items = schemas.map(item => this.resolve({ id, schema: item, history }))
 
-    if (requireOne) joiSchema = joiSchema.min(1)
+    let joiSchema = Joi.alternatives()
+      .match(mode)
+      .try(...items)
     if (required) joiSchema = joiSchema.required()
 
     return joiSchema

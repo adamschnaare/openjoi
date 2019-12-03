@@ -1,6 +1,7 @@
 import { SchemaParser, convert } from '../../src/index'
 import { getDoc } from '../../src/lib/utils'
 import Joi from '@hapi/joi'
+import { CustomConsole } from '@jest/console'
 
 describe('types', () => {
   const doc = getDoc('../../mocks/scenarios/types.json')
@@ -27,7 +28,7 @@ describe('types', () => {
     {
       key: 'object_noType',
       type: 'object',
-      valid: { one: 'string', two: 'string' },
+      valid: { three: 'string', four: 'string' },
       invalid: 'invalid',
     },
     {
@@ -49,24 +50,22 @@ describe('types', () => {
       invalid: ['string', 2],
     },
     {
-      key: 'object_allOf',
-      type: 'object',
-      valid: {
-        string_number: ['string', 1],
-        string: 'string',
-        number: 2,
-      },
-      invalid: ['string', 2],
+      key: 'object_oneOf',
+      type: 'alternatives',
+      valid: 'string',
+      invalid: { string: 'string' },
     },
     {
-      key: 'object_oneOf',
+      key: 'object_anyOf',
+      type: 'alternatives',
+      valid: { one: 'string', two: 'string' },
+      invalid: { string: 'string' },
+    },
+    {
+      key: 'object_allOf',
       type: 'object',
-      valid: {
-        string_number: ['string', 1],
-        string: 'string',
-        number: 2,
-      },
-      invalid: 'invalid',
+      valid: { one: 'string', two: 'string', alpha: 'string', beta: 'string' },
+      invalid: 'string',
     },
     {
       key: 'object_recursiveFail',

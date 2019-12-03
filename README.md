@@ -71,9 +71,9 @@ schemas['foo'].validate(1234) // -> `false
 - Passing `$refs` that refer to ancestors of itself will result in a generic Joi validation model (`Joi.any()`), or else we end up maxing out the call stack.
 
 ## Roadmap
+- `allOf` & descriminator support
 - string formatting
 - integer formatting
-- discriminator support
 
 ## Kudos 
 Highly influenced and inspired by [enjoi](https://github.com/tlivings/enjoi/blob/master/package.json). Much thanks.

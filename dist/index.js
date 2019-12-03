@@ -58,8 +58,8 @@ class SchemaParser {
         id,
         schemas: schema.allOf,
         required,
-        requireAll: true,
-        history
+        history,
+        mode: 'all'
       });
     } // anyOf
 
@@ -69,7 +69,8 @@ class SchemaParser {
         id,
         schemas: schema.anyOf,
         required,
-        history
+        history,
+        mode: 'any'
       });
     } // oneOf
 
@@ -79,8 +80,8 @@ class SchemaParser {
         id,
         schemas: schema.oneOf,
         required,
-        requireOne: true,
-        history
+        history,
+        mode: 'one'
       });
     } // $ref
 
@@ -240,22 +241,19 @@ class SchemaParser {
     id,
     schemas,
     required,
-    requireAll,
-    requireOne,
-    history
+    history,
+    mode
   }) {
-    var _Joi$array;
+    var _Joi$alternatives$mat;
 
     const items = schemas.map(item => this.resolve({
       id,
       schema: item,
-      required: requireAll,
       history
     }));
 
-    let joiSchema = (_Joi$array = _joi.default.array()).items.apply(_Joi$array, items);
+    let joiSchema = (_Joi$alternatives$mat = _joi.default.alternatives().match(mode)).try.apply(_Joi$alternatives$mat, items);
 
-    if (requireOne) joiSchema = joiSchema.min(1);
     if (required) joiSchema = joiSchema.required();
     return joiSchema;
   }

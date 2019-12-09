@@ -28,11 +28,18 @@
       },
       "object_two": {
         "type": "object",
-        "required": ["two"],
+        "required": ["alpha"],
         "properties": {
           "alpha": { "type": "string" },
           "beta": { "type": "string" }
         }
+      },
+      "object_allOf": {
+        "type": "object",
+        "allOf": [
+          { "$ref": "#/components/schemas/object" },
+          { "$ref": "#/components/schemas/object_two" }
+        ]
       },
       "object_noType": {
         "properties": {
@@ -57,22 +64,18 @@
           { "$ref": "#/components/schemas/array" }
         ]
       },
-      "object_allOf": {
-        "type": "object",
-        "allOf": [
-          { "$ref": "#/components/schemas/object" },
-          { "$ref": "#/components/schemas/object_two" }
-        ]
+      "object_allOf_noType": {
+        "allOf": [{ "type": "object" }, { "type": "object" }]
       },
       "object_allOf_nested": {
         "type": "object",
         "properties": {
           "string": { "type": "string" },
           "number": { "type": "number" },
-          "string_number": {
+          "combined": {
             "allOf": [
-              { "$ref": "#/components/schemas/string" },
-              { "$ref": "#/components/schemas/number" }
+              { "$ref": "#/components/schemas/object" },
+              { "$ref": "#/components/schemas/object_two" }
             ]
           }
         }
@@ -92,6 +95,9 @@
             "oneOf": [{ "$ref": "#/components/schemas/object_recursiveFail_oneOf" }]
           }
         }
+      },
+      "discriminator_basic": {
+        "type": "object"
       }
     }
   }

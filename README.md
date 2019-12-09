@@ -69,6 +69,7 @@ schemas['foo'].validate(1234) // -> `false
 
 ## Gotchas / Heads up
 - Passing `$refs` that refer to ancestors of itself will result in a generic Joi validation model (`Joi.any()`), or else we end up maxing out the call stack.
+- `allOf` currently only supports objects (either $ref or inline)
 
 ## Roadmap
 - `allOf` & descriminator support

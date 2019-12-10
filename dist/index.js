@@ -21,6 +21,7 @@ class SchemaParser {
     this.schemas = schemas;
     this.options = {
       required: true,
+      extensions: [],
       ...options
     };
     this.joiSchemas = {};
@@ -33,7 +34,8 @@ class SchemaParser {
         history: [id]
       }); // Default required?
     }
-  }
+  } // TODO: Clean up the objects in the call, simplify somehow
+
 
   resolve({
     id,
@@ -42,7 +44,40 @@ class SchemaParser {
     history
   }) {
     // type
+    //TODO: Need to resolve what happens when type and allOf/anyOf/oneOf exist
     if (schema.type) {
+      // allOf
+      if (schema.allOf) {
+        return this.resolveAllOf({
+          id,
+          schemas: schema.allOf,
+          required,
+          history
+        });
+      } // anyOf
+
+
+      if (schema.anyOf) {
+        return this.list({
+          id,
+          schemas: schema.anyOf,
+          required,
+          history,
+          mode: 'any'
+        });
+      } // oneOf
+
+
+      if (schema.oneOf) {
+        return this.list({
+          id,
+          schemas: schema.oneOf,
+          required,
+          history,
+          mode: 'one'
+        });
+      }
+
       return this.resolveType({
         id,
         type: schema.type,
@@ -54,13 +89,12 @@ class SchemaParser {
 
 
     if (schema.allOf) {
-      return this.list({
+      return this.resolveAllOf({
         id,
         schemas: schema.allOf,
         required,
-        history,
-        mode: 'all'
-      });
+        history
+      }); // return this.list({ id, schemas: schema.allOf, required, history, mode: 'all' })
     } // anyOf
 
 
@@ -232,8 +266,8 @@ class SchemaParser {
    * @param {string} id schema key
    * @param {array} schemas array of schemas
    * @param {bool} required if the object is required
-   * @param {bool} requireAll if all the schemas should be required
-   * @param {bool} requireOne if at least one schema should be required
+   * @param {array} history array of ids processed up this chain
+   * @param {string} mode how to process the list: 'all','one','any'
    */
 
 
@@ -244,15 +278,45 @@ class SchemaParser {
     history,
     mode
   }) {
-    var _Joi$alternatives$mat;
-
     const items = schemas.map(item => this.resolve({
       id,
       schema: item,
       history
     }));
 
-    let joiSchema = (_Joi$alternatives$mat = _joi.default.alternatives().match(mode)).try.apply(_Joi$alternatives$mat, items);
+    let joiSchema = _joi.default.alternatives.apply(_joi.default, items).match(mode);
+
+    if (required) joiSchema = joiSchema.required();
+    return joiSchema;
+  }
+
+  resolveAllOf({
+    id,
+    schemas,
+    required,
+    history
+  }) {
+    (0, _hoek.assert)((0, _util.isArray)(schemas), 'Expected allOf to be an array.');
+    const items = schemas.map(item => this.resolve({
+      id,
+      schema: item,
+      history
+    }));
+    let schemaKeys = {};
+    items.forEach(item => {
+      schemaKeys = Object.assign(schemaKeys, item.describe().keys);
+    });
+    Object.keys(schemaKeys).forEach(key => {
+      const required = schemaKeys[key].flags && schemaKeys[key].flags.presence == 'required';
+      schemaKeys[key] = this.resolve({
+        id,
+        schema: schemaKeys[key],
+        history,
+        required
+      });
+    });
+
+    let joiSchema = _joi.default.object().keys(schemaKeys);
 
     if (required) joiSchema = joiSchema.required();
     return joiSchema;

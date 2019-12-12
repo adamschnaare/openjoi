@@ -296,7 +296,10 @@ class SchemaParser {
     required,
     history
   }) {
-    (0, _hoek.assert)((0, _util.isArray)(schemas), 'Expected allOf to be an array.');
+    (0, _hoek.assert)((0, _util.isArray)(schemas), 'Expected allOf to be an array.'); // List required props if definition is present, before attempting to resolve the object
+
+    let requiredProps = schemas.filter(item => item.required != undefined);
+    if (requiredProps.length > 0) requiredProps = requiredProps[0].required;
     const items = schemas.map(item => this.resolve({
       id,
       schema: item,
@@ -307,7 +310,7 @@ class SchemaParser {
       schemaKeys = Object.assign(schemaKeys, item.describe().keys);
     });
     Object.keys(schemaKeys).forEach(key => {
-      const required = schemaKeys[key].flags && schemaKeys[key].flags.presence == 'required';
+      const required = schemaKeys[key].flags && schemaKeys[key].flags.presence == 'required' || requiredProps.includes(key);
       schemaKeys[key] = this.resolve({
         id,
         schema: schemaKeys[key],

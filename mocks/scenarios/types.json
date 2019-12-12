@@ -41,6 +41,14 @@
           { "$ref": "#/components/schemas/object_two" }
         ]
       },
+      "object_allOf_required": {
+        "type": "object",
+        "allOf": [
+          { "$ref": "#/components/schemas/object" },
+          { "$ref": "#/components/schemas/object_two" },
+          { "required": ["beta"] }
+        ]
+      },
       "object_noType": {
         "properties": {
           "three": { "type": "string" },

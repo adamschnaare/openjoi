@@ -188,7 +188,17 @@ export class SchemaParser {
   resolveAllOf({ id, schemas, required, history }) {
     assert(isArray(schemas), 'Expected allOf to be an array.')
 
-    const items = schemas.map(item => this.resolve({ id, schema: item, history }))
+    // List required props if definition is present, before attempting to resolve the object
+    let requiredProps = schemas.filter(item => item.required != undefined)
+    if (requiredProps.length > 0) requiredProps = requiredProps[0].required
+
+    const items = schemas.map(item =>
+      this.resolve({
+        id,
+        schema: item,
+        history,
+      })
+    )
 
     let schemaKeys = {}
 
@@ -198,8 +208,15 @@ export class SchemaParser {
 
     Object.keys(schemaKeys).forEach(key => {
       const required =
-        schemaKeys[key].flags && schemaKeys[key].flags.presence == 'required'
-      schemaKeys[key] = this.resolve({ id, schema: schemaKeys[key], history, required })
+        (schemaKeys[key].flags && schemaKeys[key].flags.presence == 'required') ||
+        requiredProps.includes(key)
+
+      schemaKeys[key] = this.resolve({
+        id,
+        schema: schemaKeys[key],
+        history,
+        required,
+      })
     })
 
     let joiSchema = Joi.object().keys(schemaKeys)

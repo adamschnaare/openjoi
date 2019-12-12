@@ -90,6 +90,14 @@ describe('types', () => {
       ],
     },
     {
+      key: 'object_allOf_required',
+      type: 'object',
+      valid: [{ two: 'string', alpha: 'string', beta: 'string' }],
+      invalid: [
+        { two: 'string', alpha: 'string' }, // if `required` in allOf definition is not present
+      ],
+    },
+    {
       key: 'object_allOf_noType',
       type: 'object',
       valid: [{}, {}],
